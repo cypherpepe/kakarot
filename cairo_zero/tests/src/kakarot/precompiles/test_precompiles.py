@@ -5,11 +5,9 @@ from starkware.starknet.public.abi import get_selector_from_name
 from tests.utils.constants import (
     CAIRO_MESSAGE_GAS,
     CAIRO_PRECOMPILE_GAS,
-    FIRST_KAKAROT_PRECOMPILE_ADDRESS,
-    FIRST_ROLLUP_PRECOMPILE_ADDRESS,
-    LAST_ETHEREUM_PRECOMPILE_ADDRESS,
-    LAST_KAKAROT_PRECOMPILE_ADDRESS,
-    LAST_ROLLUP_PRECOMPILE_ADDRESS,
+    ETHEREUM_PRECOMPILES,
+    KAKAROT_PRECOMPILES,
+    ROLLUP_PRECOMPILES,
 )
 from tests.utils.syscall_handler import SyscallHandler
 
@@ -282,38 +280,23 @@ class TestPrecompiles:
                 assert gas_used == CAIRO_MESSAGE_GAS
 
     class TestIsPrecompile:
-        @pytest.mark.parametrize(
-            "address", range(0, LAST_ETHEREUM_PRECOMPILE_ADDRESS + 2)
-        )
+        @pytest.mark.parametrize("address", range(0, ETHEREUM_PRECOMPILES[-1] + 2))
         def test__is_precompile_ethereum_precompiles(self, cairo_run, address):
             result = cairo_run("test__is_precompile", address=address)
-            assert result == (address in range(1, LAST_ETHEREUM_PRECOMPILE_ADDRESS + 1))
+            assert result == (address in ETHEREUM_PRECOMPILES)
 
         @pytest.mark.parametrize(
             "address",
-            range(FIRST_ROLLUP_PRECOMPILE_ADDRESS, LAST_ROLLUP_PRECOMPILE_ADDRESS + 2),
+            range(ROLLUP_PRECOMPILES[0], ROLLUP_PRECOMPILES[-1] + 2),
         )
         def test__is_precompile_rollup_precompiles(self, cairo_run, address):
             result = cairo_run("test__is_precompile", address=address)
-            assert result == (
-                address
-                in range(
-                    FIRST_ROLLUP_PRECOMPILE_ADDRESS, LAST_ROLLUP_PRECOMPILE_ADDRESS + 1
-                )
-            )
+            assert result == (address in ROLLUP_PRECOMPILES)
 
         @pytest.mark.parametrize(
             "address",
-            range(
-                FIRST_KAKAROT_PRECOMPILE_ADDRESS, LAST_KAKAROT_PRECOMPILE_ADDRESS + 2
-            ),
+            range(KAKAROT_PRECOMPILES[0], KAKAROT_PRECOMPILES[-1] + 2),
         )
         def test__is_precompile_kakarot_precompiles(self, cairo_run, address):
             result = cairo_run("test__is_precompile", address=address)
-            assert result == (
-                address
-                in range(
-                    FIRST_KAKAROT_PRECOMPILE_ADDRESS,
-                    LAST_KAKAROT_PRECOMPILE_ADDRESS + 1,
-                )
-            )
+            assert result == (address in KAKAROT_PRECOMPILES)
